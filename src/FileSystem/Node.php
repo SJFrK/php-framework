@@ -10,6 +10,15 @@ class Node {
 	public function __construct($path, $base = null) {
 		$this->setBaseDir($base);
 
+		$this->path = $this->parsePath($path);
+		$this->size = -1;
+	}
+
+	public function exists() {
+		return file_exists($this->path);
+	}
+
+	public function parsePath($path) {
 		$parts = explode('/', $path);
 		$absolutes = array();
 
@@ -31,12 +40,8 @@ class Node {
 
 		$path = preg_replace('#//+#', '/', '/' . $path);
 		$path = preg_replace('#/$#', '', $path);
-		$this->path = $path;
-		$this->size = -1;
-	}
 
-	public function exists() {
-		return file_exists($this->path);
+		return $path;
 	}
 
 	public function getChildren($sorter = null) {
@@ -73,8 +78,8 @@ class Node {
 		return $this->base;
 	}
 
-	public function setBaseDir($dir) {
-		$this->base = preg_replace('#/$#', '', $dir);
+	public function setBaseDir($path) {
+		$this->base = $this->parsePath($path);
 	}
 
 	public function getName() {

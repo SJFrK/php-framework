@@ -9,5 +9,11 @@
             "email": "contact@q5n.de"
         }
     ],
-    "require": {}
+    "require": {},
+	"autoload": {
+		"psr-4": {
+			"trollsoft\\": "src/"
+		}
+	}
 }
+

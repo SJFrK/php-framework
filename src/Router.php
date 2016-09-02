@@ -22,18 +22,18 @@ class Router {
 	protected $headRequest = false;
 
 	public function addRoute($method, $uri, $callback) {
-		if (!is_array($request)) {
-			$request = [$request];
+		if (!is_array($uri)) {
+			$uri = [$uri];
 		}
 
 		$method = strtoupper($method);
 
-		foreach ($request as $r) {
+		foreach ($uri as $u) {
 			if (!array_key_exists($method, $this->routes)) {
 				$this->routes[$method] = array();
 			}
 
-			$this->routes[$method][$path] = $callback;
+			$this->routes[$method][$u] = $callback;
 		}
 	}
 

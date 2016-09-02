@@ -1,0 +1,13 @@
+{
+    "name": "trollsoft/php-framework",
+    "description": "A small PHP framework.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SJFrK",
+            "email": "contact@q5n.de"
+        }
+    ],
+    "require": {}
+}

@@ -29,6 +29,10 @@ class Context {
 		return null;
 	}
 
+	public function contains($key) {
+		return array_key_exists($key, $this->data);
+	}
+
 	public function __set($key, $val) {
 		$this->set($key, $val);
 	}

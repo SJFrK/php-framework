@@ -1,26 +1,14 @@
 <?php
 
-/**
-trollsoft PHP Framework
-
-@author SJFrK <contact@q5n.de>
-@version 1.0.0
-*/
-
 namespace trollsoft;
 
-/**
-	View
-
-	Class for PHP inline templating.
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
 class View {
 	protected $file;
 	protected $html;
 	protected $context;
+	protected $blocks;
+	protected $blockStack;
+	protected $extend = null;
 
 	protected static $defaultContext;
 
@@ -28,8 +16,10 @@ class View {
 		static::$defaultContext = $context;
 	}
 
-	public function __construct($file, Context $context = null) {
+	public function __construct($file, Context $context = null, $blocks = []) {
 		$this->file = $file;
+		$this->blocks = $blocks;
+		$this->blockStack = new Stack();
 
 		if ($context == null) {
 			$this->context = new Context;
@@ -74,7 +64,14 @@ class View {
 	public function parse() {
 		ob_start();
 		include $this->file;
-		return ob_get_clean();
+		$buffer = ob_get_clean();
+
+		if ($this->extend != null) {
+			$view = new View($this->extend, $this->getContext(), $this->blocks);
+			return $view->parse();
+		}
+
+		return $buffer;
 	}
 
 	public function render() {
@@ -103,5 +100,31 @@ class View {
 
 	private function formatTime($time) {
 		return strftime('%A, %B %e, %Y, %H:%M %Z', strtotime($time));
+	}
+
+	private function block($name) {
+		$this->blockStack->push($name);
+		ob_start();
+	}
+
+	private function endblock() {
+		$name = $this->blockStack->pop();
+
+		$buffer = ob_get_clean();
+
+		if (array_key_exists($name, $this->blocks)) {
+			echo $this->blocks[$name];
+		}
+		elseif ($this->extend == null) {
+			echo $buffer;
+		}
+		else {
+			$this->blocks[$name] = $buffer;
+		}
+	}
+
+	private function extend($view) {
+		$path = dirname($this->file) . '/';
+		$this->extend = $path . $view . '.php';
 	}
 }

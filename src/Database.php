@@ -1,22 +1,7 @@
 <?php
 
-/**
-	trollsoft PHP Framework
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
-
 namespace trollsoft;
 
-/**
-	Database
-
-	A small helper class to get a PDO handle.
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
 class Database {
 	private static $hostname = 'localhost';
 	private static $username = 'root';

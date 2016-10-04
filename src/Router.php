@@ -1,22 +1,7 @@
 <?php
 
-/**
-	trollsoft PHP Framework
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
-
 namespace trollsoft;
 
-/**
-	Router
-
-	Maps HTTP requests to a callback.
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
 class Router {
 	protected $routes = array();
 	protected $headRequest = false;

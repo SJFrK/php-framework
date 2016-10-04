@@ -1,22 +1,7 @@
 <?php
 
-/**
-	trollsoft PHP Framework
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
-
 namespace trollsoft;
 
-/**
-	Query
-
-	A simple query builder using PDO.
-
-	@author SJFrK <contact@q5n.de>
-	@version 1.0.0
-*/
 class Query {
 	protected $whereStr = '';
 	protected $paramCount = 0;

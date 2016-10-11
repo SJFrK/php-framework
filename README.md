@@ -1,2 +1,2 @@
-# trollsoft PHP Framework
+# PHP Framework
 A small PHP framework

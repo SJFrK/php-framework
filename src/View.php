@@ -1,6 +1,6 @@
 <?php
 
-namespace trollsoft;
+namespace Tivoh;
 
 class View {
 	protected $file;

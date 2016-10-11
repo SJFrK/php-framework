@@ -1,6 +1,6 @@
 <?php
 
-namespace trollsoft\FileSystem;
+namespace Tivoh\FileSystem;
 
 class Node {
 	protected $base;

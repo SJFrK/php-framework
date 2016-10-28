@@ -112,6 +112,14 @@ class View {
 
 		$buffer = ob_get_clean();
 
+		$this->processBlock($name, $buffer);
+	}
+
+	private function emptyblock($name) {
+		$this->processBlock($name, '');
+	}
+
+	private function processBlock($name, $buffer) {
 		if (array_key_exists($name, $this->blocks)) {
 			echo $this->blocks[$name];
 		}

@@ -98,8 +98,8 @@ class View {
 		echo $tpl->render();
 	}
 
-	private function formatTime($time) {
-		return strftime('%A, %B %e, %Y, %H:%M %Z', strtotime($time));
+	private function formatTime($time, $format = '%A, %B %e, %Y, %H:%M %Z') {
+		return strftime($format, strtotime($time));
 	}
 
 	private function block($name) {

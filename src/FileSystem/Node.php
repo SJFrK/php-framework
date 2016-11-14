@@ -19,6 +19,7 @@ class Node {
 	}
 
 	public function parsePath($path) {
+		$path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
 		$parts = explode('/', $path);
 		$absolutes = array();
 
@@ -38,7 +39,7 @@ class Node {
 
 		$path = implode('/', $absolutes);
 
-		$path = preg_replace('#//+#', '/', '/' . $path);
+		$path = preg_replace('#//+#', '/', $path);
 		$path = preg_replace('#/$#', '', $path);
 
 		return $path;

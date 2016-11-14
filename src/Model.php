@@ -122,6 +122,7 @@ abstract class Model {
 			$query .= ' LIMIT ' . $limit;
 		}
 
+		$st = $db->prepare($query);
 		$st->execute([$val]);
 
 		if (is_numeric($limit) && $limit == 1) {

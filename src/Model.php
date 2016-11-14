@@ -101,7 +101,7 @@ abstract class Model {
 		return '`' . str_replace('`', '', $text) . '`';
 	}
 
-	public static function find($key, $val) {
+	public static function find($key, $val, $limit = 1) {
 		$db = Database::getHandle();
 
 		if (static::$table == null) {
@@ -116,12 +116,33 @@ abstract class Model {
 			throw new \LogicException(get_called_class() . '::$primaryKey is not set.');
 		}
 
-		$st = $db->prepare('SELECT * FROM ' . static::escape(static::$table) . ' WHERE ' . static::escape($key) . ' = ?');
-		$st->execute([$val]);
-		$data = $st->fetch(\PDO::FETCH_ASSOC);
+		$query = 'SELECT * FROM ' . static::escape(static::$table) . ' WHERE ' . static::escape($key) . ' = ?';
 
-		if ($data !== false) {
-			return new static($data);
+		if (is_numeric($limit) && $limit >= 1) {
+			$query .= ' LIMIT ' . $limit;
+		}
+
+		$st->execute([$val]);
+
+		if (is_numeric($limit) && $limit == 1) {
+			$data = $st->fetch(\PDO::FETCH_ASSOC);
+
+			if ($data !== false) {
+				return new static($data);
+			}
+		}
+		else {
+			$data = $st->fetchAll(\PDO::FETCH_ASSOC);
+
+			if ($data !== false) {
+				$out = [];
+			
+				foreach ($data as $row) {
+					$out[]= new static($row);
+				}
+
+				return $out;
+			}
 		}
 
 		return null;

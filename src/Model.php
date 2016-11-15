@@ -5,6 +5,7 @@ namespace Tivoh;
 abstract class Model {
 	protected static $table = null;
 	protected static $fields = null;
+	protected static $relations = [];
 	protected static $primaryKey = 'id';
 	protected $data;
 

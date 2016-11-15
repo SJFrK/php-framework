@@ -29,6 +29,8 @@ abstract class Model {
 	}
 
 	public function __get($key) {
+		$key = static::normalizeKey($key);
+
 		if (array_key_exists($key, $this->data)) {
 			return $this->data[$key];
 		}
@@ -38,6 +40,7 @@ abstract class Model {
 			$class = $relation[0];
 			$foreignKey = $relation[1];
 			$object = $class::find($class::$primaryKey, $this->__get($foreignKey));
+			$this->__set($key, $object);
 
 			return $object;
 		}
@@ -46,13 +49,16 @@ abstract class Model {
 	}
 
 	public function __set($key, $val) {
+		$key = static::normalizeKey($key);
+
 		$this->data[$key] = $val;
 		$this->dirty = true;
 	}
 
 	public function fromArray($data) {
-		$this->data = $data;
-		$this->dirty = true;
+		foreach ($data as $key => $val) {
+			$this->__set($key, $val);
+		}
 	}
 
 	public function save() {
@@ -88,14 +94,14 @@ abstract class Model {
 	}
 
 	public function update() {
-		if ($this->dirty == false) {
-			return true;
-		}
-
 		foreach (static::$relations as $field => $relation) {
 			if (array_key_exists($field, $this->data)) {
 				$this->__get($field)->save();
 			}
+		}
+
+		if ($this->dirty == false) {
+			return true;
 		}
 
 		$db = Database::getHandle();
@@ -122,7 +128,13 @@ abstract class Model {
 		return $st->execute([$this->__get(static::$primaryKey)]);
 	}
 
+	public static function normalizeKey($key) {
+		return strtolower(preg_replace('/([A-Z])/', '_$1', $key));
+	}
+
 	public static function find($key, $val, $limit = 1) {
+		$key = static::normalizeKey($key);
+
 		$db = Database::getHandle();
 
 		if (static::$table == null) {

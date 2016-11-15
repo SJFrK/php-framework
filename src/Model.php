@@ -58,7 +58,7 @@ abstract class Model {
 		$placeholders = [];
 		$fields = [];
 
-		foreach (static::$fields as $field) {
+		foreach (static::$fields as $field => $type) {
 			$placeholders[] = ':' . $field;
 			$fields[] = static::escape($field);
 			$data[':' . $field] = $this->__get($field);
@@ -78,7 +78,7 @@ abstract class Model {
 		$data = [];
 		$fields = [];
 
-		foreach (static::$fields as $field) {
+		foreach (static::$fields as $field => $type) {
 			$fields[] = static::escape($field) . ' = :' . $field;
 			$data[':' . $field] = $this->__get($field);
 		}

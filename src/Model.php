@@ -36,6 +36,8 @@ abstract class Model {
 			$class = $relation[0];
 			$foreignKey = $relation[1];
 			$object = $class::find($class::$primaryKey, $this->__get($foreignKey));
+
+			return $object;
 		}
 
 		return null;

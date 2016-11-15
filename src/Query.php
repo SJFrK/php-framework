@@ -21,7 +21,7 @@ class Query {
 	}
 
 	public function where($key, $value) {
-		if ($this->whereStr != '') {
+		if ($this->whereStr == '') {
 			$this->whereStr .= ' WHERE ';
 		}
 		else {
@@ -37,21 +37,26 @@ class Query {
 	}
 
 	public function all($offset = -1) {
-		$this->limit = -1;
+		return $this->some(-1, $offset);
+	}
+
+	public function some($limit, $offset = -1) {
+		$this->limit = $limit;
 		$this->offset = $offset;
 
 		$st = $this->run();
 
 		if ($st !== false) {
-			return $st->fetchAll(\PDO::FETCH_OBJ);
+			$rows = $st->fetchAll(\PDO::FETCH_OBJ);
+
+			if ($rows === false) {
+				return [];
+			}
+
+			return $rows;
 		}
 
 		return [];
-	}
-
-	public function some($limit, $offset) {
-		$this->limit = $limit;
-		$this->offset = $offset;
 	}
 
 	public function one($offset = -1) {
@@ -61,24 +66,33 @@ class Query {
 		$st = $this->run();
 
 		if ($st !== false) {
-			return $st->fetch(\PDO::FETCH_OBJ);
+			$row = $st->fetch(\PDO::FETCH_OBJ);
+
+			if ($row === false) {
+				return null;
+			}
+
+			return $row;
 		}
 
 		return null;
 	}
 
 	public function run() {
+		$query = $this->query;
+		$query .= $this->whereStr;
+
 		if (is_numeric($this->limit) && $this->limit > 0) {
-			$this->query .= ' LIMIT ' . $this->limit;
+			$query .= ' LIMIT ' . $this->limit;
 		}
 
 		if (is_numeric($this->offset) && $this->offset > 0) {
-			$this->query .= ' OFFSET ' . $this->offset;
+			$query .= ' OFFSET ' . $this->offset;
 		}
 
 		$db = Database::getHandle();
 
-		$st = $db->prepare($this->query);
+		$st = $db->prepare($query);
 
 		if ($st->execute($this->params)) {
 			return $st;

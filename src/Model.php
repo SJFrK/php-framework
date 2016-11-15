@@ -30,6 +30,15 @@ abstract class Model {
 		if (array_key_exists($key, $this->data)) {
 			return $this->data[$key];
 		}
+
+		if (array_key_exists($key, static::$relations)) {
+			$relation = static::$relations[$key];
+			$class = $relation[0];
+			$foreignKey = $relation[1];
+			$object = $class::find($class::$primaryKey, $this->__get($foreignKey));
+		}
+
+		return null;
 	}
 
 	public function __set($key, $val) {

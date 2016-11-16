@@ -36,18 +36,18 @@ class Query {
 		return $this;
 	}
 
-	public function all($offset = -1) {
-		return $this->some(-1, $offset);
+	public function all($offset = -1, $returnType = \PDO::FETCH_OBJ) {
+		return $this->some(-1, $offset, $returnType);
 	}
 
-	public function some($limit, $offset = -1) {
+	public function some($limit, $offset = -1, $returnType = \PDO::FETCH_OBJ) {
 		$this->limit = $limit;
 		$this->offset = $offset;
 
 		$st = $this->run();
 
 		if ($st !== false) {
-			$rows = $st->fetchAll(\PDO::FETCH_OBJ);
+			$rows = $st->fetchAll($returnType);
 
 			if ($rows === false) {
 				return [];
@@ -59,14 +59,14 @@ class Query {
 		return [];
 	}
 
-	public function one($offset = -1) {
+	public function one($offset = -1, $returnType = \PDO::FETCH_OBJ) {
 		$this->limit = 1;
 		$this->offset = $offset;
 
 		$st = $this->run();
 
 		if ($st !== false) {
-			$row = $st->fetch(\PDO::FETCH_OBJ);
+			$row = $st->fetch($returnType);
 
 			if ($row === false) {
 				return null;

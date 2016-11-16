@@ -133,10 +133,10 @@ abstract class Model {
 	}
 
 	public static function find($key, $val, $limit = 1) {
-		$key = static::normalizeKey($key);
+		return static::findArray([$key => $val], $limit);
+	}
 
-		$db = Database::getHandle();
-
+	public static function findArray($arr, $limit = 1) {
 		if (static::$table == null) {
 			throw new \LogicException(get_called_class() . '::$table is not set.');
 		}
@@ -149,29 +149,30 @@ abstract class Model {
 			throw new \LogicException(get_called_class() . '::$primaryKey is not set.');
 		}
 
-		$query = 'SELECT * FROM ' . Database::sanitize(static::$table) . ' WHERE ' . Database::sanitize($key) . ' = ?';
+		$query = Query::get(static::$table);
 
-		if (is_numeric($limit) && $limit >= 1) {
-			$query .= ' LIMIT ' . $limit;
+		foreach ($arr as $key => $val) {
+			$key = static::normalizeKey($key);
+			$query->where($key, $val);
 		}
 
-		$st = $db->prepare($query);
-		$st->execute([$val]);
+		if (is_numeric($limit) && $limit >= 1) {
+			$rows = $query->some($limit, -1, \PDO::FETCH_ASSOC);
+		}
+		else {
+			$rows = $query->all(-1, \PDO::FETCH_ASSOC);
+		}
 
 		if (is_numeric($limit) && $limit == 1) {
-			$data = $st->fetch(\PDO::FETCH_ASSOC);
-
-			if ($data !== false) {
-				return new static($data);
+			if (count($rows) > 0) {
+				return new static($rows[0]);
 			}
 		}
 		else {
-			$data = $st->fetchAll(\PDO::FETCH_ASSOC);
-
-			if ($data !== false) {
+			if (count($rows) > 0) {
 				$out = [];
 			
-				foreach ($data as $row) {
+				foreach ($rows as $row) {
 					$out[]= new static($row);
 				}
 

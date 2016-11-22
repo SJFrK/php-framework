@@ -34,4 +34,8 @@ class Database {
 
 		return $db;
 	}
+
+	public static function sanitize($text) {
+		return '`' . str_replace(['`', ';'], '', $text) . '`';
+	}
 }

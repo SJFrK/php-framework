@@ -16,6 +16,10 @@ class View {
 		static::$defaultContext = $context;
 	}
 
+	public static function getDefaultContext() {
+		return static::$defaultContext;
+	}
+
 	public function __construct($file, Context $context = null, $blocks = []) {
 		$this->file = $file;
 		$this->blocks = $blocks;
